@@ -1,8 +1,11 @@
 function Nvd3Graph ( ) {
-  var svg;
+  var svg,
+      chart;
 
   var initialize = function ( ) {
     setupSvg();
+    setupChart();
+    renderChart();
   };
 
   var generateData = function ( ) {
@@ -48,11 +51,52 @@ function Nvd3Graph ( ) {
     });
     svg.datum( generateData() );
     svg.transition().duration(500);
-  }
+  };
+
+  var setupChart = function ( ) {
+    chart = nv.models.lineChart()
+    chart.options({
+      x: getX,
+      y: getY,
+      noData: "Not enough data to graph",
+      transitionDuration: 500,
+      showLegend: true,
+      showXAxis: true,
+      showYAxis: true,
+      rightAlignYAxis: false,
+    });
+
+    chart.xAxis
+      .tickFormat(xAxisFormatter)
+      .axisLabel("Days since it happened");
+    chart.yAxis
+      .tickFormat(yAxisFormatter)
+      .axisLabel("Calls per day");
+  };
+
+  var renderChart = function ( ) {
+    chart(svg);
+  };
+
+  var getX = function (point, index) {
+    return point.x;
+  };
+
+  var getY = function (point, index) {
+    return point.y;
+  };
+
+  var xAxisFormatter = function (xValue) {
+    return d3.format(',d')(xValue);
+  };
+
+  var yAxisFormatter = function (yValue) {
+    return yValue.toString();
+  };
 
   return {
     initialize : initialize
-  }
+  };
 }
 
 var graph = new Nvd3Graph;
