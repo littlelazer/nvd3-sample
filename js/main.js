@@ -6,6 +6,7 @@ function Nvd3Graph ( ) {
     setupSvg();
     setupChart();
     renderChart();
+    addEvents();
   };
 
   var generateData = function ( ) {
@@ -94,10 +95,34 @@ function Nvd3Graph ( ) {
     return yValue.toString();
   };
 
+  var resizeCallback = function ( ) {
+    console.log("resize callback triggered");
+    chart.update();
+  };
+
+  var addEvents = function ( ) {
+    nv.utils.windowResize( resizeCallback );
+    chart.dispatch.on('stateChange', stateChangeCallback);
+    chart.legend.dispatch.on('legendMouseover', legendMouseoverCallback);
+  };
+
+  var stateChangeCallback = function ( ) {
+    console.log("state of the chart changed");
+    console.log(arguments)
+  };
+
+  var legendMouseoverCallback = function ( ) {
+    console.log("you moused over the legend");
+  };
+
   return {
     initialize : initialize
   };
 }
 
-var graph = new Nvd3Graph;
-graph.initialize();
+var myCallback = function ( ) {
+  console.log("addGraph callback triggered");
+};
+
+var graph = new Nvd3Graph
+nv.addGraph(graph.initialize, myCallback)
